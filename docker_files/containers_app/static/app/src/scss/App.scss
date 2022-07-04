@@ -1,0 +1,35 @@
+// src/scss/App.scss
+// Import the reset file
+@import 'reset';
+
+body {
+  text-align: center;
+}
+
+h3 {
+  font-size: 2.5em;
+}
+
+.Header {
+  padding: 1em;
+  border-bottom: .2em solid #000000;
+  margin-bottom: 2em;
+}
+
+.Sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+// Keeps the footer fixed to the bottom of the page.
+.Footer {
+  background-color: #c9c9c9;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: .5em;
+  border-top: .1em solid #000000;
+  z-index: 5;
+}

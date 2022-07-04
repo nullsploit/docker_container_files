@@ -1,0 +1,13 @@
+// src/scss/reset.scss
+// Single line comments are marked with double slashes and won't appear in the output
+/* 
+   Multi line comments will appear
+   in the CSS output file
+*/
+*{
+    margin: 0;
+    padding: 0;
+   }
+   ul, li {
+    list-style: none;
+   }

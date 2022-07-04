@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+    {% if container_count < 1 %}
+        <div class="col-lg-12">
+            <h2>No Containers</h2>
+        </div>
+    {% endif %}
+        {% for container in containers %}
+            <div class="col-lg-3">
+                <div {% if container.status == 'running' %}onclick="window.location = '{% url 'container_url' container.name %}'"{% endif %} class="card mb-3" style="cursor: pointer">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>
+                                {{ container.name }}
+                            </h5>
+                            <span class="card-tools">
+                                {% if container.status == 'running' %}
+                                <i class="fa fa-play text-success"></i>
+                                {% else %}
+                                <i class="fa fa-stop text-danger"></i>
+                                {% endif %}
+                                {{ container.status }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ container.image }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock content %}

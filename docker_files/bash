@@ -1,0 +1,26 @@
+ | 
+4.0K | ./
+4.0K | ../
+0 | .dockerenv
+4.0K | bin/
+4.0K | boot/
+360 | dev/
+4.0K | docker/
+4.0K | docker_container_files/
+4.0K | docker_files/
+4.0K | etc/
+4.0K | home/
+4.0K | lib/
+4.0K | lib64/
+4.0K | media/
+4.0K | mnt/
+4.0K | opt/
+0 | proc/
+4.0K | root/
+4.0K | run/
+4.0K | sbin/
+4.0K | srv/
+0 | sys/
+4.0K | tmp/
+4.0K | usr/
+4.0K | var/

@@ -1,0 +1,1 @@
+while true; do eval "$(cat /docker_pipe/pipe/docker)"; done

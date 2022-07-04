@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <script>
+        function getContainerObject() {
+            return {{ container_object|safe }};
+        }
+    </script>
+
+    <div id="container_app" class="row">
+
+    </div>
+
+
+    <!-- <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">{{ container.name|safe }}</div>
+                <div class="card-body">
+                    <table id="dataTable" class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Path</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for path in root_dir %}
+                                <tr>
+                                    <td>{{ path }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+{% endblock content %}
