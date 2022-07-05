@@ -17,16 +17,26 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def createSuperUser():
+    # try:
+    #     user = User.objects.all().first()
+    #     user.set_password("admin")
+    #     user.save()
+    # except Exception as e:
+    #     print(e)
+    # return
+
     # check if user already exists
     if len(User.objects.all()) > 0:
+        print("EXISTING USER FOUND")
         return
+    else:
     # create a new user
-    user = User(
-        username='admin',
-        email='admin@admin.com',
-    )
-    user.set_password('admin')
-    user.save()
+        user = User(
+            username='admin',
+            email='admin@admin.com',
+        )
+        user.set_password('admin')
+        user.save()
 
 
 
@@ -90,6 +100,7 @@ def runHostCommand(command):
     # print(var)
 
 
+@login_required
 def writeFile(container_name, file_path, file_contents):
     clearTempFiles()
     try:
@@ -116,7 +127,7 @@ def writeFile(container_name, file_path, file_contents):
         return False
     
 
-
+@login_required
 def getFileContents(container_name, file_path):
     client = docker.from_env()
     container = client.containers.get(container_name)
@@ -129,12 +140,13 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
+        print(username, password)
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            return render(request, 'login.html', {'error': 'Invalid username or password'})
+            return render(request, 'login.html')
     return render(request, 'login.html')
 
 def logout_view(request):
@@ -171,6 +183,7 @@ def home_view(request):
     return render(request, 'list.html', context)
 
 
+@login_required
 def api_container_dir(request, container_name):
     print(container_name)
     if not request.method == "GET":
@@ -185,8 +198,8 @@ def api_container_dir(request, container_name):
     root_dir = getDir(container_name, dir)
     return JsonResponse({"status": True, "items": root_dir})
 
-
 @csrf_exempt
+@login_required
 def api_write_file_contents(request, container_name):
     print(container_name)
     if not request.method == "POST":
@@ -214,6 +227,77 @@ def api_docker_power(request, container_name):
     pass
 
 
+@login_required
+def users_view(request):
+    containers = getContainers()
+    context = {
+        'containers': containers,
+    }
+    return render(request, 'users.html', context)
+
+
+@csrf_exempt
+@login_required
+def api_users(request):
+    if request.method == "PATCH":
+        try:
+            data = json.loads(request.body.decode())
+            user_id = data['id']
+            username = data['username']
+            password = data['password']
+            user = User.objects.get(id=user_id)
+            if not password == "******":
+                print("changing password to", password)
+                user.set_password(password)
+            if not username == user.username:
+                print("changing username to", username)
+                user.username = username
+            user.save()
+            return JsonResponse({"status": True, "message": "User updated"})
+        except:
+            return JsonResponse({"status": False, "message": "User not found"})
+    elif request.method == "PUT":
+        try:
+            data = json.loads(request.body.decode())
+            username = data['username']
+            password = data['password']
+            is_active = True if data['is_active'] == "true" else False
+        except Exception as e:
+            print(e)
+            return JsonResponse({"status": False, "message": "Invalid request, parameters missing"})
+        user = User(
+            username=username,
+            is_active=is_active,
+        )
+        user.set_password(password)
+        try:
+            user.save()
+            return JsonResponse({"status": True, "message": "User created"})
+        except:
+            return JsonResponse({"status": False, "message": "User already exists"})
+    elif request.method == "GET":
+        users_list = []
+        for user in User.objects.all():
+            user_obj = {
+                "id": user.id,
+                'username': user.username,
+                "password": "******",
+                'email': user.email,
+                'is_superuser': user.is_superuser,
+                'is_active': user.is_active,
+                'date_joined': user.date_joined,
+                'last_login': user.last_login,
+            }
+            users_list.append(user_obj)
+
+        return JsonResponse({
+            "status": True, 
+            "users": users_list
+        })
+    else:
+        return JsonResponse({"status": False, "message": "Method not allowed"})
+
+@login_required
 def api_get_file_contents(request, container_name):
     print(container_name)
     if not request.method == "GET":

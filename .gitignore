@@ -1,1 +1,5 @@
 /.vscode
+docker_files/containers_app/static/app/build/main.*.js
+docker_files/containers_app/static/app/build/main.*.json
+docker_files/containers_app/__pycache__/*
+docker_files/django_docker_files/__pycache__/*
