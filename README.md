@@ -3,7 +3,7 @@
 
 ### Step 1 - Create docker pipe to container
 
- - Create docker pipe directory `mkdir /docker_pipe/pipe`
+ - Create docker pipe directory `mkdir -p /docker_pipe/pipe`
  - Change pipe permission `sudo chmod -R 777 /docker_pipe/pipe`
  - Create docker pip `sudo mkfifo /docker_pipe/pipe/docker`
  - Create the pipe listener, create a file called `exec_dockerpipe.sh`
