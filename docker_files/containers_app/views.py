@@ -12,7 +12,33 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import random
 import os
+from django.contrib.auth import authenticate, login, logout
 
+
+
+def createSuperUser():
+    # check if user already exists
+    if len(User.objects.all()) > 0:
+        return
+    # create a new user
+    user = User(
+        username='admin',
+        email='admin@admin.com',
+    )
+    user.set_password('admin')
+    user.save()
+
+
+
+# create a decorator to make sure the user is logged in
+def login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect('login_url')
+    return wrapper
+ 
 
 def getContainers():
     client = docker.from_env()
@@ -98,12 +124,34 @@ def getFileContents(container_name, file_path):
     return output
 
 
+def login_view(request):
+    createSuperUser()
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            return render(request, 'login.html', {'error': 'Invalid username or password'})
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login_url')
+
+
+@login_required
 def container_view(request, name):
+    createSuperUser()
     init_system()
+    containers = getContainers()
     container = Container.objects.get(name=name)
     root_dir = getDir(name, '/')
     container_object = json.dumps(model_to_dict(container))
     context = {
+        'containers': containers,
         'container': container,
         'container_object': container_object,
         "root_dir": root_dir
@@ -111,7 +159,9 @@ def container_view(request, name):
     return render(request, 'container.html', context)
 
 
+@login_required
 def home_view(request):
+    createSuperUser()
     init_system()
     containers = getContainers()
     context = {
@@ -159,6 +209,9 @@ def api_write_file_contents(request, container_name):
         print(e)
         return JsonResponse({"status": False, "message": "Could not write file"})
     
+
+def api_docker_power(request, container_name):
+    pass
 
 
 def api_get_file_contents(request, container_name):

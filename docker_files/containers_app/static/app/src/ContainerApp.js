@@ -292,11 +292,11 @@ class ContainerApp extends Component {
                     {this.state.directory_items.map((item, index) => {
                       if(item != "./") {
                         var typeIcon = item.endsWith("/") ? "fa fa-folder" : "fa fa-file";
-                        var typeName = item.endsWith("/") ? "Folder" : "File";
+                        var typeName = item.endsWith("/") ? "Directory" : "File";
                         return(
-                          <tr key={index} onClick={() => {this.directoryClick(`${this.state.directory}${item}`)}}>
-                            <td>{item}</td>
-                            <td><i className={typeIcon}></i> {typeName}</td>
+                          <tr style={{cursor: 'pointer'}} key={index} onClick={() => {this.directoryClick(`${this.state.directory}${item}`)}}>
+                            <td><i className={typeIcon}></i> {item}</td>
+                            <td>{typeName}</td>  
                           </tr>
                         )
                       }

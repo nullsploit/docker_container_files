@@ -10,9 +10,9 @@
     {% endif %}
         {% for container in containers %}
             <div class="col-lg-3">
-                <div {% if container.status == 'running' %}onclick="window.location = '{% url 'container_url' container.name %}'"{% endif %} class="card mb-3" style="cursor: pointer">
+                <div class="card mb-3">
                     <div class="card">
-                        <div class="card-header">
+                        <div style="cursor: pointer" class="card-header" {% if container.status == 'running' %}onclick="window.location = '{% url 'container_url' container.name %}'"{% endif %}>
                             <h5>
                                 {{ container.name }}
                             </h5>
@@ -25,9 +25,18 @@
                                 {{ container.status }}
                             </span>
                         </div>
-                        <div class="card-body">
+                        <div style="cursor: pointer" class="card-body" {% if container.status == 'running' %}onclick="window.location = '{% url 'container_url' container.name %}'"{% endif %}>
                             <p>{{ container.image }}</p>
                         </div>
+                        <!-- <div class="card-footer">
+                            {% if container.status == 'running' %}
+                                <button class="btn btn-sm btn-warning"><i class="fa fa-undo"></i> Restart</button>
+                                <button class="btn btn-sm btn-danger"><i class="fa fa-stop"></i> Stop</button>
+                            {% else %}
+                                <button class="btn btn-sm btn-warning"><i class="fa fa-undo"></i> Restart</button>
+                                <button class="btn btn-sm btn-success"><i class="fa fa-play"></i> Start</button>
+                            {% endif %}
+                        </div> -->
                     </div>
                 </div>
             </div>
