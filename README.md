@@ -21,9 +21,10 @@
 
  - Build the container `docker build --no-cache -t  docker_container_files:latest .`
 
+You may need to reboot your server/pc to run the pipe listener, unless you use tmux or something similar
 <hr>
 
 ### That's it, now run the container
 
  ```Dockerfile
- docker run --name=docker_container_files -d -it -p 8000:8000 -v /docker_container_files/tmp:/docker_container_files/tmp -v /var/run/docker.sock:/var/run/docker.sock -v /docker_pipe/pipe/docker:/docker/pipe docker_container_files:latest```
+ docker run --name=docker_container_files -d -it -p 8000:8000 -v /docker_container_files/tmp:/docker_container_files/tmp -v /var/run/docker.sock:/var/run/docker.sock -v /docker_pipe/pipe/docker:/docker/pipe docker_container_files:latest
