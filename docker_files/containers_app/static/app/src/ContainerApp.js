@@ -286,6 +286,7 @@ class ContainerApp extends Component {
                   <tr>
                     <th>Path</th>
                     <th>Type</th>
+                    <th>Size</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -293,10 +294,14 @@ class ContainerApp extends Component {
                       if(item != "./") {
                         var typeIcon = item.endsWith("/") ? "fa fa-folder" : "fa fa-file";
                         var typeName = item.endsWith("/") ? "Directory" : "File";
+
+                        var item_new = item.split("|")[1];
+                        var size = item.split("|")[0];
                         return(
-                          <tr style={{cursor: 'pointer'}} key={index} onClick={() => {this.directoryClick(`${this.state.directory}${item}`)}}>
-                            <td><i className={typeIcon}></i> {item}</td>
+                          <tr style={{cursor: 'pointer'}} key={index} onClick={() => {this.directoryClick(`${this.state.directory}${item_new}`)}}>
+                            <td><i className={typeIcon}></i> {item_new}</td>
                             <td>{typeName}</td>  
+                            <td>{size}</td>  
                           </tr>
                         )
                       }

@@ -29,6 +29,7 @@ def getContainers():
 
 
 def init_system():
+    # return
     container_names = []
     for container_object in getContainers():
         container_names.append(container_object['name'])

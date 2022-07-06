@@ -24,10 +24,12 @@ urlpatterns = [
     path('container/<name>/', views.container_view, name='container_url'),
     path('login/', views.login_view, name='login_url'),
     path('logout/', views.logout_view, name='logout_url'),
+    path('users/', views.users_view, name='users_url'),
 
     path('api/get_directory/<container_name>/', views.api_container_dir, name='api_get_directory_url'),
     path('api/file_contents/<container_name>/', views.api_get_file_contents, name='api_get_file_contents_url'),
     path('api/write_file_contents/<container_name>/', views.api_write_file_contents, name='api_write_file_contents_url'),
+    path('api/users/', views.api_users, name='api_users_url'),
 ]
 
 init_system()
