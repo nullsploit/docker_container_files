@@ -78,19 +78,56 @@ def clearTempFiles():
     os.system("rm -rf /docker_container_files/tmp/*")
 
 
-def getDir(container_name, directory):
-    client = docker.from_env()
-    container = client.containers.get(container_name)
-    output = container.exec_run('ls -ahp ' + directory).output.decode()
+def getFileSize(container, file_path):
     dq = '"'
+    sq = "'"
     lbrace = "{"
     rbrace = "}"
+    # du -sh pppoe.txt | awk '{print $1}'
+    if not file_path[0] == "/":
+        file_path = "/" + file_path
+    if not file_path[-1] == "/":
+        # cmnd = f"bash -c {dq}du -sh {file_path} | awk {sq}{lbrace}print $1{rbrace}{sq}{dq}"
+        cmnd = f"bash -c {dq}ls -l {file_path} | awk {sq}{lbrace}print $5{rbrace}{sq}{dq}"
+        # print(cmnd)
+        byte_size = int(container.exec_run(cmnd).output.decode())
+
+        # round 100.00000 to 100.00
+
+        if byte_size < 1024:
+            return f"{round(byte_size, 2)} Bytes"
+        elif byte_size < 1048576:
+            return f"{round(byte_size/1024, 2)} KB"
+        elif byte_size < 1073741824:
+            return f"{round(byte_size/1048576, 2)} MB"
+        elif byte_size < 1099511627776:
+            return f"{round(byte_size/1073741824, 2)} GB"
+        elif byte_size < 1125899906842624:
+            return f"{round(byte_size/1099511627776, 2)} TB"
+    else:
+        return str(0) + " Bytes"
+
+
+
+def getDir(container_name, directory):
+    client = docker.from_env()
+    dq = '"'
+    sq = "'"
+    lbrace = "{"
+    rbrace = "}"
+    container = client.containers.get(container_name)
+    output = container.exec_run('ls -ahp ' + directory).output.decode()
+    # output = container.exec_run(f"bash -c {dq}ls -ahpl {directory} | awk {sq}{lbrace}print $5, $9{rbrace}{sq}{dq}").output.decode()
     # print(output)
+    out = []
     output = output.split('\n')
     for item in output:
-        if len(item) < 1:
-            output.remove(item)
-    return output
+        if not item == "./":
+            if not len(item) < 1:
+                size = getFileSize(container, f"{directory}{item}")
+                out.append(f"{size}|{item}")
+    return out
+
 
 
 def runHostCommand(command):
@@ -255,24 +292,34 @@ def api_users(request):
             return JsonResponse({"status": True, "message": "User updated"})
         except:
             return JsonResponse({"status": False, "message": "User not found"})
+    if request.method == "DELETE":
+        try:
+            data = json.loads(request.body.decode())
+            user_id = data['id']
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return JsonResponse({"status": True, "message": "User deleted"})
+        except:
+            return JsonResponse({"status": False, "message": "User not found"})
     elif request.method == "PUT":
         try:
             data = json.loads(request.body.decode())
             username = data['username']
             password = data['password']
-            is_active = True if data['is_active'] == "true" else False
+            # is_active = True if data['is_active'] == "true" else False
         except Exception as e:
             print(e)
             return JsonResponse({"status": False, "message": "Invalid request, parameters missing"})
         user = User(
             username=username,
-            is_active=is_active,
+            # is_active=is_active,
         )
         user.set_password(password)
         try:
             user.save()
             return JsonResponse({"status": True, "message": "User created"})
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({"status": False, "message": "User already exists"})
     elif request.method == "GET":
         users_list = []
