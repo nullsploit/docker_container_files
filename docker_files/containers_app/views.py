@@ -100,7 +100,7 @@ def runHostCommand(command):
     # print(var)
 
 
-@login_required
+
 def writeFile(container_name, file_path, file_contents):
     clearTempFiles()
     try:
@@ -127,7 +127,6 @@ def writeFile(container_name, file_path, file_contents):
         return False
     
 
-@login_required
 def getFileContents(container_name, file_path):
     client = docker.from_env()
     container = client.containers.get(container_name)

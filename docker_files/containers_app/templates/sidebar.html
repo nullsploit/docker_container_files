@@ -38,8 +38,14 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <!-- <h6 class="collapse-header">Custom Components:</h6> -->
                         {% for container in containers %}
-                        <a class="collapse-item" href="/container/{{ container.name }}/">{{ container.name }}</a>
+                            {% if container.status == 'running' %}
+                            <a class="collapse-item" href="/container/{{ container.name }}/"><i class="fa fa-play text-success"></i> {{ container.name }}</a>
+                            {% else %}
+                            <a class="collapse-item" href="#"><i class="fa fa-stop text-danger"></i> {{ container.name }}</a>
+                            {% endif %}
                         {% endfor %}
+
+                        
                         <!-- <a class="collapse-item" href="buttons.html">Buttons</a>
                         <a class="collapse-item" href="cards.html">Cards</a> -->
                     </div>
