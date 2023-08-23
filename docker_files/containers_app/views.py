@@ -57,7 +57,7 @@ def getContainers():
     for container in client.containers.list(all=True):
         image = client.images.get(container.attrs['Config']['Image'])
         image_name = image.tags[0] if len(image.tags) > 0 else ""
-        started_at = container.attrs['State']['StartedAt'].split('.')[0]
+        started_at = container.attrs['State']['StartedAt'].split('.')[0].replace("Z", "")
         started_at = datetime.datetime.strptime(started_at, "%Y-%m-%dT%H:%M:%S")
         started_at = datetime.datetime.now() - started_at
         started_at = str(started_at).split('.')[0]
